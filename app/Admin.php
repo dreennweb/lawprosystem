@@ -4,17 +4,18 @@ namespace App;
 
 use App\Notifications\AdminResetPassword;
 use App\Traits\HasPermissionsTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable
 {
-    use HasPermissionsTrait, Notifiable;
+    use HasFactory, HasPermissionsTrait, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $fillable = [
         'id',
@@ -57,14 +58,36 @@ class Admin extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that should be hidden for serialization.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+            'is_activated' => 'boolean',
+            'is_account_setup' => 'boolean',
+            'is_active' => 'boolean',
+            'is_expired' => 'boolean',
+            'is_otp_verify' => 'boolean',
+            'started_at' => 'datetime',
+            'expires_at' => 'datetime',
+            'accepted_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'otp_date' => 'datetime',
+        ];
+    }
 
     /**
      * Send the password reset notification.
